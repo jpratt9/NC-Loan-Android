@@ -75,7 +75,10 @@ public class OfferRecyclerAdapter extends RecyclerView.Adapter<OfferRecyclerAdap
 
     @Override
     public int getItemCount() {
-        return offers.size();
+        if (offers != null) {
+            return offers.size();
+        }
+        return 0;
     }
 
     @Override
