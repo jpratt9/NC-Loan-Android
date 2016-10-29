@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -73,7 +74,11 @@ public class OffersFragment extends Fragment implements View.OnClickListener {
                     .getSerializable(KEY_LAYOUT_MANAGER);
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
+                1);
+        mRecyclerView.addItemDecoration(dividerItemDecoration);
 
+        offers.add(new Offer());
         offers.add(new Offer());
 
         offerRecyclerAdapter = new OfferRecyclerAdapter(offers);
