@@ -16,11 +16,17 @@ import android.view.MenuItem;
 
 import me.floatr.R;
 import me.floatr.ui.fragments.HomeFragment;
+import me.floatr.ui.fragments.OffersFragment;
+import me.floatr.util.FloatrApiInterface;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static String TAG = MainActivity.class.getSimpleName();
+    public static final String BASE_URL = "http://api.floatr.me/";
+    public FloatrApiInterface apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +44,14 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.container,new HomeFragment()).addToBackStack(null).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container,new OffersFragment()).addToBackStack(null).commit();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+         apiService =
+                retrofit.create(FloatrApiInterface.class);
     }
 
     @Override
@@ -81,7 +94,7 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "Nav press: "+item.getTitle());
         if (id == R.id.nav_home) {
             Log.d(TAG, "Nav home");
-            getSupportFragmentManager().beginTransaction().replace(R.id.container,new HomeFragment()).addToBackStack(null).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.container,new OffersFragment()).addToBackStack(null).commit();
             // Handle the camera action
         } else if (id == R.id.nav_offers) {
 
