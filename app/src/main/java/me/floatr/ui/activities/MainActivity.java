@@ -1,25 +1,30 @@
 package me.floatr.ui.activities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import me.floatr.R;
 import me.floatr.ui.fragments.HomeFragment;
+import me.floatr.ui.fragments.LoginFragment;
 import me.floatr.ui.fragments.OffersFragment;
 import me.floatr.util.FloatrApiInterface;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import me.floatr.util.PreferenceNames;
+import me.floatr.util.ServiceGenerator;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -27,31 +32,30 @@ public class MainActivity extends AppCompatActivity
     public static String TAG = MainActivity.class.getSimpleName();
     public static final String BASE_URL = "http://api.floatr.me/";
     public FloatrApiInterface apiService;
+    public SharedPreferences preferences;
+    Toolbar toolbar;
+    View navHeaderView;
+    TextView navHeadEmailTextView;
+    TextView navHeadNameTextView;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        preferences = getSharedPreferences(PreferenceNames.MAIN_PREFS_NAME, 0);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.container,new OffersFragment()).addToBackStack(null).commit();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-         apiService =
-                retrofit.create(FloatrApiInterface.class);
+        if (preferences.getString(PreferenceNames.PREF_USER_TOKEN, null) == null) {
+            apiService = ServiceGenerator.createService(FloatrApiInterface.class);
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment()).addToBackStack(null).commit();
+        } else {
+            apiService = ServiceGenerator.createService(FloatrApiInterface.class, preferences.getString(PreferenceNames.PREF_USER_TOKEN, ""));
+            finishLogin();
+        }
     }
 
     @Override
@@ -91,23 +95,49 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        Log.d(TAG, "Nav press: "+item.getTitle());
+        Log.d(TAG, "Nav press: " + item.getTitle());
         if (id == R.id.nav_home) {
             Log.d(TAG, "Nav home");
-            getSupportFragmentManager().beginTransaction().replace(R.id.container,new OffersFragment()).addToBackStack(null).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, new OffersFragment()).addToBackStack(null).commit();
             // Handle the camera action
         } else if (id == R.id.nav_offers) {
 
         } else if (id == R.id.nav_loans) {
 
-        }  else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
 
+        } else if (id == R.id.nav_logout) {
+            preferences.edit().clear().apply();
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment()).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void setUpNavigation() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        navHeaderView = navigationView.getHeaderView(0);
+        navHeadNameTextView = (TextView) navHeaderView.findViewById(R.id.navHeaderName);
+        navHeadEmailTextView = (TextView) navHeaderView.findViewById(R.id.navHeaderEmail);
+        navHeadNameTextView.setText(preferences.getString(PreferenceNames.PREF_USER_FIRST_NAME, "") + " " + preferences.getString(PreferenceNames.PREF_USER_LAST_NAME, ""));
+        navHeadEmailTextView.setText(preferences.getString(PreferenceNames.PREF_USER_USERNAME, ""));
+    }
+
+    public void finishLogin() {
+        InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(drawerLayout.getWindowToken(), 0);
+        setUpNavigation();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, new HomeFragment()).commit();
     }
 }

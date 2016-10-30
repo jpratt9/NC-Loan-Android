@@ -17,8 +17,8 @@
 
     </group>
 
-    <!--<item android:title="Communicate">-->
-        <!--<menu>-->
+    <item android:title="Settings">
+        <menu>
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/help_circle"
@@ -27,7 +27,11 @@
                 android:id="@+id/nav_send"
                 android:icon="@drawable/settings"
                 android:title="Settings" />
-        <!--</menu>-->
-    <!--</item>-->
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/account"
+                android:title="Logout" />
+        </menu>
+    </item>
 
 </menu>

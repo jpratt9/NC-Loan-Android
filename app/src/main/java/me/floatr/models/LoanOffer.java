@@ -8,6 +8,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class LoanOffer {
 
+    @SerializedName("_id")
+    @Expose
+    private String id;
     @SerializedName("loaner")
     @Expose
     private User loaner;
@@ -26,6 +29,14 @@ public class LoanOffer {
     @SerializedName("period_unit")
     @Expose
     private String periodUnit;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     /**
      * @return The loaner

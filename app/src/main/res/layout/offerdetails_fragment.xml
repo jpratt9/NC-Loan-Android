@@ -21,6 +21,7 @@
             android:gravity="center_vertical">
 
             <TextView
+                android:id="@+id/offerDetailFragNameText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Name" />
@@ -40,7 +41,7 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@id/offerDetailFragMinRangeValue"
+            android:id="@+id/offerDetailFragMinRangeValue"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/offerDetailFragMinRangeText"
@@ -62,7 +63,7 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@id/offerDetailFragMaxRangeValue"
+            android:id="@+id/offerDetailFragMaxRangeValue"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/offerDetailFragMaxRangeText"
@@ -84,7 +85,7 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@id/offerDetailFragMaxRangeValue"
+            android:id="@+id/offerDetailFragInterestRateValue"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/offerDetailFragInterestRateText"
@@ -118,11 +119,11 @@
             android:id="@+id/offerDetailFragPeriodUnit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:textSize="16sp"
             android:layout_below="@+id/offerDetailFragPeriodText"
+            android:layout_marginLeft="4dp"
             android:layout_toRightOf="@+id/offerDetailFragPeriodValue"
-            android:text="Days" />
+            android:text="Days"
+            android:textSize="16sp" />
     </RelativeLayout>
 
 </LinearLayout>
