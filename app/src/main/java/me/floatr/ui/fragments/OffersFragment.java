@@ -3,6 +3,7 @@ package me.floatr.ui.fragments;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
@@ -42,6 +43,9 @@ public class OffersFragment extends Fragment implements View.OnClickListener {
     private SharedPreferences mainPref;
     private OfferRecyclerAdapter offerRecyclerAdapter;
     private List<Offer> offers;
+
+    FloatingActionButton createOffer;
+
 
     View loadOverlay;
 
@@ -84,14 +88,20 @@ public class OffersFragment extends Fragment implements View.OnClickListener {
         offerRecyclerAdapter = new OfferRecyclerAdapter(offers);
         mRecyclerView.setAdapter(offerRecyclerAdapter);
 
+        createOffer = (FloatingActionButton)view.findViewById(R.id.offerFragCreateFab);
+        createOffer.setOnClickListener(this);
+
+
         this.view = view;
         return view;
     }
 
     @Override
     public void onClick(View v) {
-//        if (v == view.findViewById(R.id.button)) {
-//        }
+        if (v == view.findViewById(R.id.offerFragCreateFab)) {
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,new CreateOfferFragment()).addToBackStack(null).commit();
+        }
+
     }
 
     /**
